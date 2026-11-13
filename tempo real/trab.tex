@@ -1,0 +1,278 @@
+\documentclass[11pt, aspectratio=169]{beamer}
+
+% Tema e Cores
+\usetheme{Madrid}
+\usecolortheme{whale}
+
+% Pacotes essenciais para compilação com pdflatex
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+% Informações da Capa
+\title[Controle via Equação do Erro]{Controle via Equação do Erro}
+\subtitle{Projeto de controladores a partir da dinâmica do erro}
+\author[Kauan \& Samyla]{Kauan C. Moraes \& Samyla Nascimento}
+\date{\today}
+
+\begin{document}
+
+% Slide 1: Capa
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Slide 2: O Conceito Fundamental
+\begin{frame}{O Conceito Fundamental}
+    \begin{itemize}
+        \item \textbf{Objetivo do Controle:} Fazer com que o erro de rastreamento, $e(t) = r(t) - y(t)$, convirja para zero de forma estável.
+        \item \textbf{Abordagem Clássica vs. Dinâmica do Erro:} Em vez de projetar o controlador focando apenas na saída $y(t)$, projeta-se uma \textbf{equação diferencial} para o próprio $e(t)$.
+        \item \textbf{Vantagens:}
+        \begin{itemize}
+            \item Desempenho previsível e ajustável.
+            \item Linearização por realimentação (cancela dinâmicas não-lineares).
+            \item Relação direta com controladores clássicos (como o PID).
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% Slide 3: Exemplo 1ª Ordem
+\begin{frame}{Exemplo 1 - Dinâmica de 1ª Ordem}
+    \begin{itemize}
+        \item Desejamos que o erro decaia para zero seguindo uma dinâmica exponencial de primeira ordem:
+    \end{itemize}
+    
+    \begin{block}{Equação do Erro de 1ª Ordem}
+        \[ \dot{e}(t) + K \cdot e(t) = 0 \]
+    \end{block}
+    
+    \begin{itemize}
+        \item Se $K > 0$, a solução analítica desta equação diferencial é:
+        \[ e(t) = e(0) \cdot e^{-Kt} \]
+        \item \textbf{Significado:} O erro converge exponencialmente para zero. A velocidade da correção é totalmente definida pela escolha do ganho $K$.
+    \end{itemize}
+\end{frame}
+
+% Slide 4: Lei de Controle 1ª Ordem
+\begin{frame}{Obtenção da Lei de Controle (1ª Ordem)}
+    \begin{itemize}
+        \item Considere um sistema com a seguinte dinâmica: $\dot{y}(t) = f(y) + u(t)$
+        \item Derivando a equação do erro ($e = r - y$): 
+        \[ \dot{e}(t) = \dot{r}(t) - \dot{y}(t) = \dot{r}(t) - f(y) - u(t) \]
+        \item Igualando com a dinâmica desejada ($\dot{e} = -K \cdot e$), obtemos:
+        \[ \dot{r}(t) - f(y) - u(t) = -K \cdot e(t) \]
+    \end{itemize}
+    
+    \begin{alertblock}{Lei de Controle (1ª Ordem)}
+        \[ u(t) = \dot{r}(t) - f(y) + K \cdot e(t) \]
+    \end{alertblock}
+\end{frame}
+
+% Slide 5: Dinâmica Desejada 2ª Ordem
+\begin{frame}{Exemplo 2 - Dinâmica de 2ª Ordem}
+    \begin{itemize}
+        \item Para um sistema de 2ª ordem, podemos impor uma dinâmica desejada do erro regida pela seguinte equação:
+    \end{itemize}
+    
+    \begin{block}{Equação do Erro de 2ª Ordem}
+        \[ \ddot{e}(t) + 2\zeta\omega_n \dot{e}(t) + \omega_n^2 e(t) = 0 \]
+    \end{block}
+    
+    \begin{itemize}
+        \item \textbf{Parâmetros de Projeto:}
+        \begin{itemize}
+            \item $\zeta$ (Fator de amortecimento): O intervalo $0 < \zeta < 1$ garante comportamento subamortecido, enquanto $\zeta \geq 1$ resulta em comportamento superamortecido.
+            \item $\omega_n$ (Frequência natural): Definida como $\omega_n > 0$, dita a rapidez da resposta do sistema.
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% Slide 6: Lei de Controle 2ª Ordem
+\begin{frame}{Obtenção da Lei de Controle}
+    \begin{itemize}
+        \item Considere um sistema físico genérico de 2ª ordem: 
+        \[ \ddot{y}(t) = f(y, \dot{y}) + u(t) \]
+        \item A aceleração do erro é dada por: 
+        \[ \ddot{e}(t) = \ddot{r}(t) - \ddot{y}(t) = \ddot{r}(t) - f(y, \dot{y}) - u(t) \]
+        \item Igualando à dinâmica desejada ($\ddot{e} = -2\zeta\omega_n\dot{e} - \omega_n^2 e$), isolamos $u(t)$:
+    \end{itemize}
+    
+    \begin{alertblock}{Lei de Controle}
+        \[ u(t) = \ddot{r}(t) - f(y, \dot{y}) + 2\zeta\omega_n \dot{e}(t) + \omega_n^2 e(t) \]
+    \end{alertblock}
+    
+    \begin{itemize}
+        \item \textbf{Nota:} A lei cancela a não-linearidade $f(y, \dot{y})$ e atua como um controlador \textbf{PD}, onde $K_p = \omega_n^2$ e $K_d = 2\zeta\omega_n$.
+    \end{itemize}
+\end{frame}
+
+% Slide 7: Resposta Física
+\begin{frame}{Resposta Resultante}
+    No caso subamortecido, a equação analítica final, $e(t) = A \cdot e^{-\zeta\omega_n t} \sin(\omega_d t + \phi)$, revela os dois comportamentos simultâneos:
+    
+    \vspace{0.5cm}
+    
+    \begin{enumerate}
+        \item \textbf{A Oscilação:} O termo $\sin(\omega_d t + \phi)$ força o erro a alternar entre valores positivos e negativos com frequência $\omega_d$.
+        \vspace{0.3cm}
+        \item \textbf{O Decaimento:} O termo exponencial $e^{-\zeta\omega_n t}$ possui expoente negativo (pois $\zeta, \omega_n > 0$). Ele atua como um \textbf{envelope} que esmaga a amplitude da oscilação.
+    \end{enumerate}
+    
+    \vspace{0.5cm}
+    \textbf{Resultado:} O erro oscila, mas com amplitude cada vez menor, até ser forçado a estacionar em zero quando $t \to \infty$.
+\end{frame}
+
+% Slide 8: Rumo ao PID
+\begin{frame}{Exemplo 3 - Dinâmica Desejada: Rumo ao PID}
+    \begin{itemize}
+        \item Mesmo sistema de 2ª ordem: $\ddot{y}(t) = f(y, \dot{y}) + u(t)$
+        \item Podemos utilizar uma EDO de \textbf{3ª ordem}, adicionando a ação integral:
+        \[ \dddot{e}(t) + K_d \ddot{e}(t) + K_p \dot{e}(t) + K_i e(t) = 0 \]
+        \item \textbf{Objetivo:} Projetar ganhos $K_p$, $K_d$ e $K_i$ de tal forma que o polinômio característico da EDO de 3ª ordem possua raízes com parte real negativa para que o erro convirja para zero.
+    \end{itemize}
+\end{frame}
+
+% Slide 9: Lei de Controle PID
+\begin{frame}{Obtenção da Lei de Controle PID}
+    \begin{itemize}
+        \item Sistema de 2ª ordem: $\ddot{y}(t) = f(y, \dot{y}) + u(t)$
+        \item Aceleração do erro: $\ddot{e}(t) = \ddot{r}(t) - f(y, \dot{y}) - u(t)$
+        \item Igualando à nova dinâmica desejada (a partir de uma integração da equação), obtemos:
+    \end{itemize}
+    
+    \begin{alertblock}{Lei de Controle (PID + Feedforward)}
+        \[ u(t) = \ddot{r}(t) - f(y, \dot{y}) + K_p e(t) + K_i \int_0^t e(\tau) d\tau + K_d \dot{e}(t) \]
+    \end{alertblock}
+    
+    \begin{itemize}
+        \item A lei agora possui os termos exatos de um \textbf{PID clássico}, acrescidos da linearização ($-f(y, \dot{y})$) e do \textit{feedforward} da referência ($\ddot{r}(t)$).
+    \end{itemize}
+\end{frame}
+
+% Slide 10: Robustez do PID
+\begin{frame}{Robustez do PID a Perturbações Constantes}
+    \begin{itemize}
+        \item \textbf{O Problema do PD (2ª ordem):} Na presença de uma perturbação constante $d$ não modelada ($\ddot{y} = f + d + u$)
+        \item A equação do erro se torna:
+    \end{itemize}
+    
+    \begin{block}{Equação do Erro com perturbação não modelada}
+        \[ \ddot{e}(t) + K_d \dot{e}(t) + K_p e(t) + K_i \int_0^t e(\tau) d\tau = d \]
+    \end{block}
+    
+    \begin{itemize}
+        \item Caso não houvesse o termo integral, o erro não estabilizaria em zero.
+        \item Mas com o PID, ao derivarmos essa equação em relação ao tempo, a constante $d$ some (vira zero), e voltamos à equação desejada, garantindo que o erro convirja para zero.
+    \end{itemize}
+\end{frame}
+
+% ---------------- NOVOS SLIDES: TÉCNICA DE POLOS DOMINANTES ---------------- %
+
+% Slide 11: Técnica de Polos Dominantes - Visão Geral
+\begin{frame}{Técnica de Polos Dominantes (Sistemas de Ordem $n$)}
+    \begin{itemize}
+        \item Em sistemas de ordem $n$, ao usarmos a \textbf{Linearização por Realimentação Completa} e incluirmos a ação integral, a EDO do erro passa a ser de ordem $n+1$:
+    \end{itemize}
+    
+    \begin{block}{Dinâmica do Erro de Ordem $n+1$}
+        \[ e^{(n+1)}(t) + K_{n-1} e^{(n)}(t) + \dots + K_0 \dot{e}(t) + K_i e(t) = 0 \] %+ K_i \int_0^t e(\tau) d\tau
+    \end{block}
+
+    \begin{itemize}
+        \item Como temos $n+1$ ganhos, possuímos \textbf{liberdade total} para alocar todos os polos do sistema.
+        \item A \textbf{Técnica de Polos Dominantes} permite projetar o sistema para se comportar, na prática, como o de 2ª ordem que estudamos, "escondendo" os demais polos.
+    \end{itemize}
+\end{frame}
+
+% Slide 12: Passo a Passo (Polos Dominantes)
+\begin{frame}{Projeto via Polos Dominantes: Passo a Passo}
+    \begin{enumerate}
+        \item \textbf{Polos Dominantes (2 polos):}\\
+        Definimos o comportamento transitório desejado (sobressinal e tempo de acomodação) escolhendo $\zeta$ e $\omega_n$:
+        \[ P_{dom}(s) = s^2 + 2\zeta\omega_n s + \omega_n^2 \]
+        
+        \vspace{0.3cm}
+        
+        \item \textbf{Polos Não-Dominantes Rápidos ($n-1$ polos):}\\
+        Para que não interfiram na resposta, posicionamos os demais polos bem à esquerda no plano complexo (regra prática: $p_r \ge 5\zeta\omega_n$):
+        \[ P_{rap}(s) = (s + p_r)^{n-1} \]
+    \end{enumerate}
+\end{frame}
+
+% Slide 13: Igualdade de Polinômios
+\begin{frame}{Projeto via Polos Dominantes: Igualdade de Polinômios}
+    \begin{enumerate}
+        \setcounter{enumi}{2}
+        \item \textbf{Polinômio Alvo:}\\
+        Multiplicamos as dinâmicas para obter a equação característica total desejada:
+        \begin{alertblock}{Polinômio Desejado}
+            \[ P_{desejado}(s) = (s^2 + 2\zeta\omega_n s + \omega_n^2) \cdot (s + p_r)^{n-1} = 0 \]
+        \end{alertblock}
+        
+        \vspace{0.2cm}
+        
+        \item \textbf{Encontrando os Ganhos:}\\
+        Expandimos $P_{desejado}(s)$ e igualamos coeficiente por coeficiente com a equação característica do erro fechada em malha.
+        \item Isso gera um sistema linear simples que determina \textbf{diretamente} todos os ganhos ($K_i, K_0, K_1, \dots, K_{n-1}$).
+    \end{enumerate}
+\end{frame}
+
+% ---------------- FIM DOS NOVOS SLIDES ---------------- %
+
+% Slide 14: Conclusão
+\begin{frame}{Conclusão}
+    A partir da abordagem de projetar a dinâmica do erro, é possível:
+    \begin{itemize}
+        \item Derivar leis de controle que se alinham com controladores clássicos (PD e PID).
+        \item Incorporar robustez a perturbações constantes através da ação integral.
+        \item Cancelar não-linearidades do sistema via realimentação.
+        \item Garantir que o erro de rastreamento converge para zero de acordo com a dinâmica desejada, aplicando técnicas de alocação de polos.
+    \end{itemize}
+\end{frame}
+
+% Slide 15: Apêndice A - Equação Característica
+\begin{frame}{Apêndice A - Demonstração: Por que o erro 2ª ordem decai oscilando?}
+    
+    \begin{itemize}
+        \item Para entender o comportamento, resolvemos a EDO homogênea:
+        \[ \ddot{e} + 2\zeta\omega_n \dot{e} + \omega_n^2 e = 0 \]
+        \item Assumindo uma solução do tipo $e(t) = e^{st}$, obtemos a \textbf{equação característica}:
+        \[ s^2 + 2\zeta\omega_n s + \omega_n^2 = 0 \]
+        \item Aplicando Bhaskara para encontrar as raízes $s_1$ e $s_2$:
+        \[ s = \frac{-2\zeta\omega_n \pm \sqrt{4\zeta^2\omega_n^2 - 4\omega_n^2}}{2} = -\zeta\omega_n \pm \omega_n\sqrt{\zeta^2 - 1} \]
+    \end{itemize}
+\end{frame}
+
+% Slide 16: Apêndice A - Raízes Complexas
+\begin{frame}{Apêndice A}
+    \Large{Raízes Complexas Conjugadas:}
+    \begin{itemize}
+        \item Como definimos que o sistema é subamortecido ($0 < \zeta < 1$), o termo sob a raiz quadrada ($\zeta^2 - 1$) é \textbf{negativo}.
+        \item Extraindo a unidade imaginária $j$:
+        \[ \sqrt{\zeta^2 - 1} = j\sqrt{1 - \zeta^2} \]
+        \item As raízes tornam-se complexas conjugadas:
+        \[ s_{1,2} = -\zeta\omega_n \pm j\omega_d \]
+        \item Onde $\omega_d = \omega_n\sqrt{1 - \zeta^2}$ é a frequência natural amortecida.
+    \end{itemize}
+\end{frame}
+
+% Slide 17: Apêndice A - Solução no Tempo
+\begin{frame}{Apêndice A}
+    \Large{Solução no Tempo:}
+    \begin{itemize}
+        \item A solução geral é a combinação linear das exponenciais:
+        \[ e(t) = C_1 e^{(-\zeta\omega_n + j\omega_d)t} + C_2 e^{(-\zeta\omega_n - j\omega_d)t} \]
+        \item Colocando a parte real em evidência:
+        \[ e(t) = e^{-\zeta\omega_n t} \left( C_1 e^{j\omega_d t} + C_2 e^{-j\omega_d t} \right) \]
+        \item Pela \textbf{Relação de Euler} ($e^{\pm j\theta} = \cos\theta \pm j\sin\theta$) e agrupando constantes, chegamos à forma trigonométrica final:
+    \end{itemize}
+    
+    \begin{block}{Solução Final do Erro}
+        \[ e(t) = A \cdot e^{-\zeta\omega_n t} \sin(\omega_d t + \phi) \]
+    \end{block}
+\end{frame}
+
+\end{document}
