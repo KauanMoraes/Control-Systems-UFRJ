@@ -1,0 +1,168 @@
+\documentclass[11pt, aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[portuguese]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\usetheme{Madrid}
+\usecolortheme{whale}
+
+\title{Controle em Tempo Real}
+\subtitle{Controle Ótimo Baseado em Dados via Reinforcement Learning}
+\author{Engenharia Matemática \& Controle e Automação}
+\date{}
+
+\begin{document}
+
+% Slide 1: Capa
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Slide 2: Dicionário Controle vs RL
+\begin{frame}{A Ponte Matemática: Controle Clássico vs. RL}
+    A malha fechada é idêntica em ambas as áreas, mas a formulação passa de analítica para estocástica e baseada em dados:
+    
+    \vspace{0.3cm}
+    \begin{table}
+        \centering
+        \small
+        \renewcommand{\arraystretch}{1.25}
+        \begin{tabular}{lll}
+            \toprule
+            \textbf{Controle Clássico / Moderno} & \textbf{Reinforcement Learning} & \textbf{Notação Matemática} \\
+            \midrule
+            Planta / Sistema & Ambiente (\textit{Environment}) & $P(s_{t+1} \mid s_t, a_t)$ \\
+            Controlador & Agente (\textit{Agent}) & Otimiza a Política $\pi$ \\
+            Variáveis de Estado ($x$) & Estado (\textit{State}) & $s_t \in \mathcal{S}$ \\
+            Sinal de Controle ($u$) & Ação (\textit{Action}) & $a_t \in \mathcal{A}$ \\
+            Função de Custo ($J$) a minimizar & Recompensa ($r$) a maximizar & $r_t = R(s_t, a_t)$ \\
+            Lei de Controle ($u = -Kx$) & Política (\textit{Policy}) & $a_t = \pi(s_t)$ ou $\pi(a_t \mid s_t)$ \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+% Slide 3: Formulação MDP e Bellman
+\begin{frame}{Formulação Matemática: MDPs e Equação de Bellman}
+    Em vez de equações diferenciais determinísticas $\dot{x} = f(x,u)$, o RL modela a planta como um \textbf{Processo de Decisão de Markov (MDP)}: $(\mathcal{S}, \mathcal{A}, P, R, \gamma)$.
+    
+    \begin{block}{Objetivo de Otimização (Retorno Esperado)}
+        \[ \max_{\pi} \mathbb{E}_{\tau \sim \pi} \left[ \sum_{t=0}^{\infty} \gamma^t R(s_t, a_t) \right], \quad \gamma \in [0, 1) \]
+    \end{block}
+    
+    \begin{alertblock}{Equação de Bellman (Análoga à Hamilton-Jacobi-Bellman / Riccati)}
+        \[ Q^{\pi}(s_t, a_t) = \mathbb{E}_{s_{t+1} \sim P} \left[ r_t + \gamma \mathbb{E}_{a_{t+1} \sim \pi} \left[ Q^{\pi}(s_{t+1}, a_{t+1}) \right] \right] \]
+    \end{alertblock}
+    
+    \begin{itemize}
+        \item Em \textbf{Deep RL}, a política $\pi_\theta(s)$ e a função valor $Q_\phi(s,a)$ são aproximadas por Redes Neurais Profundas, permitindo controle não-linear em alta dimensionalidade.
+    \end{itemize}
+\end{frame}
+
+% Slide 4: Arquitetura Actor-Critic
+\begin{frame}{Controle Contínuo: Arquitetura Actor-Critic}
+    Para sinais de controle analógicos/contínuos ($u \in \mathbb{R}^m$, como torque ou vazão), discretizar o espaço gera explosão combinatória. A solução do estado da arte é a família \textbf{Actor-Critic}:
+    
+    \vspace{0.3cm}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{O Ator (Controlador $\pi_\theta$)}
+                \begin{itemize}
+                    \item Recebe o vetor de estados $s_t$.
+                    \item Gera o sinal de controle contínuo $a_t$ diretamente.
+                    \item Atualiza seus pesos $\theta$ na direção do gradiente que maximiza a avaliação do Crítico.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        
+        \begin{column}{0.48\textwidth}
+            \begin{block}{O Crítico (Avaliador $Q_\phi$ ou $V_\phi$)}
+                \begin{itemize}
+                    \item Estima o custo/retorno futuro esperado a partir do estado atual.
+                    \item Atualiza seus pesos $\phi$ minimizando o Erro Residual de Bellman (TD-Error).
+                    \item Fornece o gradiente de otimização para o Ator.
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 5: On-Policy vs Off-Policy
+\begin{frame}{On-Policy vs. Off-Policy: O Dilema dos Dados}
+    A distinção matemática central reside na distribuição de probabilidade usada para calcular as esperanças matemáticas durante a otimização:
+    
+    \vspace{0.2cm}
+    \begin{block}{1. Abordagem On-Policy (Ex: PPO)}
+        \[ \nabla J(\theta) = \mathbb{E}_{\tau \sim \pi_\theta} \left[ \sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) A^{\pi_\theta}(s_t, a_t) \right] \]
+        \begin{itemize}
+            \item Exige trajetórias geradas \textbf{estritamente} pela lei de controle atual $\pi_\theta$.
+            \item Após atualizar $\theta$, os dados antigos são descartados. Baixa eficiência de amostra; exige simuladores rápidos (\textit{Sim-to-Real}).
+        \end{itemize}
+    \end{block}
+    
+    \begin{block}{2. Abordagem Off-Policy (Ex: SAC, TD3)}
+        \[ J(Q) = \mathbb{E}_{(s,a,r,s') \sim \mathcal{D}} \left[ \left( Q(s,a) - \left( r + \gamma \mathbb{E}_{a' \sim \pi}[Q(s',a')] \right) \right)^2 \right] \]
+        \begin{itemize}
+            \item Recicla dados históricos armazenados em um \textbf{Replay Buffer} ($\mathcal{D}$), gerados por políticas passadas ou controladores clássicos (PID/LQR).
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+% Slide 6: Algoritmos do Estado da Arte
+\begin{frame}{Algoritmos do Estado da Arte em Controle Contínuo}
+    \begin{itemize}
+        \item \textbf{PPO (\textit{Proximal Policy Optimization} - On-Policy):}
+        \begin{itemize}
+            \item Restringe o tamanho do passo de atualização (\textit{Clipping} / Trust Region).
+            \item Garante convergência monotônica e evita instabilidade brusca na malha.
+        \end{itemize}
+        \vspace{0.25cm}
+        \item \textbf{TD3 (\textit{Twin Delayed DDPG} - Off-Policy):}
+        \begin{itemize}
+            \item Utiliza duas redes Críticas (Duplo Q-Learning) tomando o mínimo entre elas para eliminar a superestimação de valor.
+            \item Adiciona ruído de suavização na ação alvo, evitando picos no atuador.
+        \end{itemize}
+        \vspace{0.25cm}
+        \item \textbf{SAC (\textit{Soft Actor-Critic} - Off-Policy):}
+        \begin{itemize}
+            \item Padrão-ouro atual em robótica. Maximiza recompensa + \textbf{entropia} da política: $\sum \mathbb{E}[r_t + \alpha \mathcal{H}(\pi(\cdot \mid s_t))]$.
+            \item Gera políticas estocásticas altamente robustas a perturbações e dinâmicas não modeladas.
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% Slide 7: Comparativo Final e Critério de Projeto (Ajustado para caber no slide)
+\begin{frame}{Síntese Comparativa e Critério de Engenharia}
+    \begin{table}
+        \centering
+        \resizebox{\textwidth}{!}{%
+        \renewcommand{\arraystretch}{1.35}
+        \begin{tabular}{lllll}
+            \toprule
+            \textbf{Algoritmo} & \textbf{Paradigma} & \textbf{Política} & \textbf{Eficiência de Dados} & \textbf{Aplicação Típica em Controle} \\
+            \midrule
+            \textbf{DDPG} & Off-Policy & Determinística & Alta & Base teórica (sofre com superestimação) \\
+            \textbf{TD3} & Off-Policy & Determinística & Alta & Plantas que exigem sinal de controle suave \\
+            \textbf{SAC} & Off-Policy & Estocástica & Muito Alta & Robótica física, plantas lentas/custosas \\
+            \textbf{PPO} & On-Policy & Estocástica & Baixa & Simuladores paralelos rápidos (\textit{Sim-to-Real}) \\
+            \bottomrule
+        \end{tabular}%
+        }
+    \end{table}
+    
+    \vspace{0.25cm}
+    \begin{alertblock}{Regra Prática de Projeto}
+        \small
+        \begin{itemize}
+            \item \textbf{Simulação barata e rápida:} Use \textbf{PPO} pela facilidade de sintonia e estabilidade monotônica.
+            \item \textbf{Planta real, física ou simulação pesada (CFD):} Use \textbf{SAC} ou \textbf{TD3} para maximizar o reaproveitamento de dados via \textit{Replay Buffer}.
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\end{document}
