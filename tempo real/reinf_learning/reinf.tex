@@ -47,7 +47,54 @@
     \end{table}
 \end{frame}
 
-% Slide 3: Formulação MDP e Bellman
+% Slide 3: NOVO - Política e Recompensa
+\begin{frame}{Fundamentos: Política ($\pi$) e Recompensa ($r_t$)}
+    \begin{block}{1. Política ($\pi$): A Lei de Controle}
+        Mapeia o estado medido $s_t$ no sinal de atuação $a_t$:
+        \begin{itemize}
+            \item \textbf{Determinística:} $a_t = \mu(s_t)$ (análoga à realimentação clássica $u = -Kx$).
+            \item \textbf{Estocástica:} $a_t \sim \pi(\cdot \mid s_t)$ (ex: Gaussiana $\mathcal{N}(\mu_\theta(s_t), \sigma_\theta(s_t))$). Essencial para \textbf{exploração} da dinâmica da planta e robustez contra ruídos.
+        \end{itemize}
+    \end{block}
+
+    \begin{alertblock}{2. Recompensa ($r_t$): O Custo Instantâneo Invertido}
+        Enquanto o controle ótimo minimiza um custo $c_t$, o RL maximiza o sinal escalar $r_t = R(s_t, a_t, s_{t+1})$. No caso quadrático (LQR):
+        \[ r_t = -\left( x_t^T Q_c x_t + u_t^T R_c u_t \right) \]
+        \textit{Vantagem prática:} Permite embutir restrições físicas de atuadores e termos não-lineares sem exigir solução analítica de Riccati.
+    \end{alertblock}
+\end{frame}
+
+% Slide 4: NOVO - Funções Valor V(s) e Q(s,a)
+\begin{frame}{Funções Valor: $V^\pi(s)$ e $Q^\pi(s,a)$ (O Custo-para-Ir)}
+    Avaliam o desempenho acumulado de longo prazo (horizonte descontado por $\gamma \in [0, 1)$):
+    
+    \vspace{0.2cm}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Função Valor de Estado: $V^\pi(s)$}
+                Retorno esperado partindo de $s$ e seguindo a lei de controle $\pi$:
+                \[ V^\pi(s) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k+1} \,\middle|\, s_t = s \right] \]
+                \begin{itemize}
+                    \item É o negativo do \textbf{Custo-para-Ir} ($V^*(x) = -J^*(x) = -x^T P x$ no LQR).
+                    \item Atua como candidata a \textbf{Função de Lyapunov} ($\Delta V > 0 \iff \Delta J < 0$).
+                \end{itemize}
+            \end{block}
+        \end{column}
+        
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Função Ação-Valor: $Q^\pi(s,a)$}
+                Retorno esperado aplicando a ação $a$ em $s$, e seguindo $\pi$ depois:
+                \[ Q^\pi(s,a) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k+1} \,\middle|\, s_t = s, a_t = a \right] \]
+                \begin{itemize}
+                    \item Embute a dinâmica de 1 passo da planta.
+                    \item Permite extrair a ação ótima sem conhecer $A$ e $B$: $\pi^*(s) = \arg\max_a Q^*(s,a)$.
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 5: Formulação MDP e Bellman
 \begin{frame}{Formulação Matemática: MDPs e Equação de Bellman}
     Em vez de equações diferenciais determinísticas $\dot{x} = f(x,u)$, o RL modela a planta como um \textbf{Processo de Decisão de Markov (MDP)}: $(\mathcal{S}, \mathcal{A}, P, R, \gamma)$.
     
@@ -64,7 +111,7 @@
     \end{itemize}
 \end{frame}
 
-% Slide 4: Arquitetura Actor-Critic
+% Slide 6: Arquitetura Actor-Critic
 \begin{frame}{Controle Contínuo: Arquitetura Actor-Critic}
     Para sinais de controle analógicos/contínuos ($u \in \mathbb{R}^m$, como torque ou vazão), discretizar o espaço gera explosão combinatória. A solução do estado da arte é a família \textbf{Actor-Critic}:
     
@@ -92,7 +139,7 @@
     \end{columns}
 \end{frame}
 
-% Slide 5: On-Policy vs Off-Policy
+% Slide 7: On-Policy vs Off-Policy
 \begin{frame}{On-Policy vs. Off-Policy: O Dilema dos Dados}
     A distinção matemática central reside na distribuição de probabilidade usada para calcular as esperanças matemáticas durante a otimização:
     
@@ -113,7 +160,7 @@
     \end{block}
 \end{frame}
 
-% Slide 6: Algoritmos do Estado da Arte
+% Slide 8: Algoritmos do Estado da Arte
 \begin{frame}{Algoritmos do Estado da Arte em Controle Contínuo}
     \begin{itemize}
         \item \textbf{PPO (\textit{Proximal Policy Optimization} - On-Policy):}
@@ -136,7 +183,7 @@
     \end{itemize}
 \end{frame}
 
-% Slide 7: Comparativo Final e Critério de Projeto (Ajustado para caber no slide)
+% Slide 9: Comparativo Final e Critério de Projeto
 \begin{frame}{Síntese Comparativa e Critério de Engenharia}
     \begin{table}
         \centering

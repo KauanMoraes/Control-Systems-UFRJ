@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.10.7)  16 NOV 2026 14:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.10.7)  16 NOV 2026 16:09
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -777,7 +777,7 @@ File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count342
 \l__pdf_internal_box=\box76
 )
-No file reinf.aux.
+(./reinf.aux)
 \openout1 = `reinf.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 19.
@@ -798,6 +798,7 @@ LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 19.
 LaTeX Font Info:    ... okay on input line 19.
 LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 19.
 LaTeX Font Info:    ... okay on input line 19.
+
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -855,6 +856,8 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 Package hyperref Info: Link coloring OFF on input line 19.
+
+(./reinf.out) (./reinf.out)
 \@outlinefile=\write5
 \openout5 = `reinf.out'.
 
@@ -928,15 +931,14 @@ Dictionary: translator-numbers-dictionary, Language: English
 (/usr/share/texlive/texmf-dist/tex/latex/translator/translator-theorem-dictiona
 ry-English.dict
 Dictionary: translator-theorem-dictionary, Language: English 
-)
-No file reinf.nav.
-[1
+) (./reinf.nav) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf/fonts/enc/
 dvips/lm/lm-ec.enc}]
 LaTeX Font Info:    Trying to load font information for OT1+lmss on input line 
 48.
- (/usr/share/texmf/tex/latex/lm/ot1lmss.fd
+
+(/usr/share/texmf/tex/latex/lm/ot1lmss.fd
 File: ot1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 4
@@ -986,39 +988,54 @@ LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <5> not available
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvip
 s/lm/lm-mathsy.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 65.
+(Font)              <12> on input line 65.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <8> on input line 65.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <6> on input line 65.
-LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <10.95> not available
+LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <12> not available
 (Font)              Font shape `T1/lmss/m/sl' tried instead on input line 65.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <8> not available
 (Font)              Font shape `T1/lmss/m/sl' tried instead on input line 65.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <6> not available
 (Font)              Font shape `T1/lmss/m/sl' tried instead on input line 65.
- [3
-
-{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathex.enc}]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 93.
-LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <12> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 93.
- [4
+(Font)              <10.95> on input line 65.
+LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <10.95> not available
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 65.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <14.4> on input line 65.
+LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <14.4> not available
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 65.
 
-]
-Overfull \vbox (46.64873pt too high) detected at line 114
+Overfull \vbox (0.86967pt too high) detected at line 65
  []
 
-[5
+[3
+
+{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathex.enc}]
+Overfull \vbox (2.46333pt too high) detected at line 95
+ []
+
+[4
+
+] [5
+
+] [6
+
+]
+Overfull \vbox (46.64873pt too high) detected at line 161
+ []
+
+[7
 
 ]
 LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <10.95> not available
-(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 137.
+(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 184.
 
- [6
+ [8
 
-] [7
+] [9
 
 ]
 \tf@nav=\write6
@@ -1035,24 +1052,17 @@ LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <10.95> not available
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
-
-
-Package rerunfilecheck Warning: File `reinf.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `reinf.out':
-(rerunfilecheck)             Before: <no file>
-(rerunfilecheck)             After:  D41D8CD98F00B204E9800998ECF8427E;0.
+Package rerunfilecheck Info: File `reinf.out' has not changed.
+(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 23031 strings out of 476162
- 443725 string characters out of 5794814
- 1939975 words of memory out of 5000000
- 44536 multiletter control sequences out of 15000+600000
- 639167 words of font info for 94 fonts, out of 8000000 for 9000
+ 23097 strings out of 476162
+ 445256 string characters out of 5794814
+ 1942975 words of memory out of 5000000
+ 44590 multiletter control sequences out of 15000+600000
+ 645782 words of font info for 100 fonts, out of 8000000 for 9000
  16 hyphenation exceptions out of 8191
- 101i,15n,107p,407b,955s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 101i,15n,107p,407b,859s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf/fonts/type1/public/lm/lmex10.pfb></usr/share/texmf/fonts/ty
 pe1/public/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb></u
 sr/share/texmf/fonts/type1/public/lm/lmmi6.pfb></usr/share/texmf/fonts/type1/pu
@@ -1065,10 +1075,10 @@ mf/fonts/type1/public/lm/lmsso8.pfb></usr/share/texmf/fonts/type1/public/lm/lms
 y10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy6.pfb></usr/share/texmf/fon
 ts/type1/public/lm/lmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
 amsfonts/symbols/msbm10.pfb>
-Output written on reinf.pdf (7 pages, 247602 bytes).
+Output written on reinf.pdf (9 pages, 284897 bytes).
 PDF statistics:
- 420 PDF objects out of 1000 (max. 8388607)
- 303 compressed objects within 4 object streams
- 15 named destinations out of 1000 (max. 500000)
- 367 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 526 PDF objects out of 1000 (max. 8388607)
+ 380 compressed objects within 4 object streams
+ 19 named destinations out of 1000 (max. 500000)
+ 511 words of extra memory for PDF output out of 10000 (max. 10000000)
 
